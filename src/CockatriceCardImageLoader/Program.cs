@@ -15,14 +15,13 @@ namespace CockatriceCardImageLoader
 {
     internal class Program
     {
-        static string MTG_CARD_IMAGE_SERVER = ConfigurationManager.AppSettings["MTG_CARD_IMAGE_SERVER"];
+        static string DEFAULT_CARD_IMAGE_SERVER = ConfigurationManager.AppSettings["DEFAULT_CARD_IMAGE_SERVER"];
         static string COCKATRICE_DATA_FOLDER = ConfigurationManager.AppSettings["COCKATRICE_DATA_FOLDER"];
         static string COCKATRICE_DEFAULT_CARD_FILENAME = ConfigurationManager.AppSettings["COCKATRICE_DEFAULT_CARD_FILENAME"];
         static string COCKATRICE_DEFAULT_TOKEN_FILENAME = ConfigurationManager.AppSettings["COCKATRICE_DEFAULT_TOKEN_FILENAME"];
+        static string COCKATRICE_DEFAULT_CUSTOMSETS_FOLDERNAME = ConfigurationManager.AppSettings["COCKATRICE_DEFAULT_CUSTOMSETS_FOLDERNAME"];
         static string COCKATRICE_DEFAULT_IMAGE_FOLDERNAME = ConfigurationManager.AppSettings["COCKATRICE_DEFAULT_IMAGE_FOLDERNAME"];
         static string COCKATRICE_COSTUM_IMAGE_FOLDERNAME = ConfigurationManager.AppSettings["COCKATRICE_COSTUM_IMAGE_FOLDERNAME"];
-
-
 
         static void Main(string[] args)
         {
@@ -30,11 +29,14 @@ namespace CockatriceCardImageLoader
             string collectionFilepath = null;
             string downloadedPicsPath = null;
 
+
+
+
             log("");
             log("CockatriceCardImageLoader");
             log("");
 
-            if (MTG_CARD_IMAGE_SERVER == null)
+            if (DEFAULT_CARD_IMAGE_SERVER == null)
             {
                 log("Configuration file is missing!\nApplication terminated.");
                 return;
@@ -52,6 +54,7 @@ namespace CockatriceCardImageLoader
                 log("0 - Proceed to operations or to end application.");
 
                 string cmd1 = Console.ReadLine();
+                logToFile(cmd1);
                 log("");
 
                 try
@@ -67,7 +70,7 @@ namespace CockatriceCardImageLoader
 
                         case "1":
                             collectionFilepath = Path.Combine(COCKATRICE_DATA_FOLDER, COCKATRICE_DEFAULT_CARD_FILENAME);
-                            downloadedPicsPath = Path.Combine(COCKATRICE_DATA_FOLDER, "pics", COCKATRICE_DEFAULT_IMAGE_FOLDERNAME);
+                            downloadedPicsPath = Path.Combine(COCKATRICE_DATA_FOLDER, COCKATRICE_DEFAULT_IMAGE_FOLDERNAME);
                             log($"Collection file path: '{collectionFilepath}'");
                             log($"Images output folder: '{downloadedPicsPath}'");
                             log("Load cards file from xml file...");
@@ -78,7 +81,7 @@ namespace CockatriceCardImageLoader
 
                         case "2":
                             collectionFilepath = Path.Combine(COCKATRICE_DATA_FOLDER, COCKATRICE_DEFAULT_TOKEN_FILENAME);
-                            downloadedPicsPath = Path.Combine(COCKATRICE_DATA_FOLDER, "pics", COCKATRICE_DEFAULT_IMAGE_FOLDERNAME);
+                            downloadedPicsPath = Path.Combine(COCKATRICE_DATA_FOLDER, COCKATRICE_DEFAULT_IMAGE_FOLDERNAME);
                             log($"Collection file path: '{collectionFilepath}'");
                             log($"Images output folder: '{downloadedPicsPath}'");
                             log("Load tokens file from xml file...");
@@ -88,10 +91,10 @@ namespace CockatriceCardImageLoader
                             break;
 
                         case "3":
-                            log("Input collection source file (relative to %cockatrice_data%/customsets): ", newLine: false);
+                            log("Input collection source file (relative to %cockatrice_data%): ", newLine: false);
                             string cardSourceFile = Console.ReadLine();
-                            collectionFilepath = Path.Combine(COCKATRICE_DATA_FOLDER, "customsets", cardSourceFile);
-                            downloadedPicsPath = Path.Combine(COCKATRICE_DATA_FOLDER, "pics", COCKATRICE_COSTUM_IMAGE_FOLDERNAME);
+                            collectionFilepath = Path.Combine(COCKATRICE_DATA_FOLDER, COCKATRICE_DEFAULT_CUSTOMSETS_FOLDERNAME, cardSourceFile);
+                            downloadedPicsPath = Path.Combine(COCKATRICE_DATA_FOLDER, COCKATRICE_COSTUM_IMAGE_FOLDERNAME);
                             log($"Collection file path: '{collectionFilepath}'");
                             log($"Images output folder: '{downloadedPicsPath}'");
                             if (System.IO.File.Exists(collectionFilepath))
@@ -112,6 +115,7 @@ namespace CockatriceCardImageLoader
                 catch(Exception ex)
                 {
                     log($"Exception! {ex.Message}", ex);
+                    log("");
                 }
             }
 
@@ -128,6 +132,8 @@ namespace CockatriceCardImageLoader
                 log("0 - End application.");
 
                 string cmd2 = Console.ReadLine();
+                logToFile(cmd2);
+                log("");
 
                 try
                 {
@@ -181,33 +187,41 @@ namespace CockatriceCardImageLoader
 
             log("Input set code: ", newLine: false);
             string setCode = Console.ReadLine();
+            logToFile(setCode);
 
             log("Input set name: ", newLine: false);
             string setName = Console.ReadLine();
+            logToFile(setName);
 
             log("Input set type (\"Custom[: <game>[:<set>]]\"): ", newLine: false);
             string setType = Console.ReadLine();
+            logToFile(setType);
 
             log("Input set author: ", newLine: false);
             string setAuthor = Console.ReadLine();
+            logToFile(setAuthor);
 
             log("Input set version: ", newLine: false);
             string setVersion = Console.ReadLine();
+            logToFile(setVersion);
 
             log("Input set date: ", newLine: false);
             string setDate = Console.ReadLine();
+            logToFile(setDate);
 
             log("Input PlaneSculptors page url for the set: ", newLine: false);
             string planesculptorsPageUrl = Console.ReadLine();
+            logToFile(planesculptorsPageUrl);
 
-            log("Input result file (relative to %cockatrice_data%/customsets): ", newLine: false);
+            log("Input result file (relative to %cockatrice_data%): ", newLine: false);
             string resultFile = Console.ReadLine();
+            logToFile(resultFile);
 
 
 
             log("Converting Planesculptors JSON into Cockatrice XML...");
 
-            resultFile = Path.Combine(COCKATRICE_DATA_FOLDER, "customsets", resultFile);
+            resultFile = Path.Combine(COCKATRICE_DATA_FOLDER, COCKATRICE_DEFAULT_CUSTOMSETS_FOLDERNAME, resultFile);
 
             string json = SiteInterface.GetSetJson(planesculptorsPageUrl);
             SetCardList cardList = JsonConvert.DeserializeObject<SetCardList>(json);
@@ -336,7 +350,7 @@ namespace CockatriceCardImageLoader
             {
                 try
                 {
-                    string url = cardPrint.PrintImageUrl(MTG_CARD_IMAGE_SERVER) + "?" + DateTime.Now.Ticks.ToString();
+                    string url = cardPrint.PrintImageUrl(DEFAULT_CARD_IMAGE_SERVER) + "?" + DateTime.Now.Ticks.ToString();
 
                     client.DownloadFile(new Uri(url), cardPrintLocalFilename);
 

@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
 	<appSettings>
-		<add key="MTG_CARD_IMAGE_SERVER" value="https://cards.scryfall.io/large/front" />
+		<add key="DEFAULT_CARD_IMAGE_SERVER" value="https://cards.scryfall.io/large/front" />
 		<add key="COCKATRICE_DATA_FOLDER" value="C:\\Users\\User01\\AppData\\Local\\Cockatrice\\Cockatrice" />
 		<add key="COCKATRICE_DEFAULT_CARD_FILENAME" value="cards.xml" />
 		<add key="COCKATRICE_DEFAULT_TOKEN_FILENAME" value="tokens.xml" />
-		<add key="COCKATRICE_DEFAULT_IMAGE_FOLDERNAME" value="downloadedPics" />
-		<add key="COCKATRICE_COSTUM_IMAGE_FOLDERNAME" value="CUSTOM" />
+		<add key="COCKATRICE_DEFAULT_CUSTOMSETS_FOLDERNAME" value="customsets" />
+		<add key="COCKATRICE_DEFAULT_IMAGE_FOLDERNAME" value="pics/downloadedPics" />
+		<add key="COCKATRICE_COSTUM_IMAGE_FOLDERNAME" value="pics/CUSTOM" />
 	</appSettings>
 </configuration>
