@@ -12,7 +12,7 @@ Cockatrice Card Image Loader is a little console app coded in C# that allows:
 > To the present moment, it was used to convert a dozen of the Magnitar Star Wars custom sets without any problem.
 > But use this tool at your own risk ;)
 
-> For the commit rules of this project please refer to the [commit rules file](commits.md "Commit rules file").
+> For the commit rules of this project please refer to the [commit rules file](Commits.md "Commit rules file").
 
 ## Setup
 
