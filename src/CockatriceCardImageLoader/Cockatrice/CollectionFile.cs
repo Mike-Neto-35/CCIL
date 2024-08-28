@@ -53,8 +53,6 @@ namespace CockatriceCardImageLoader.Cockatrice
             return cardFile;
         }
 
-
-
         public void ExportToXmlFile(string xmlFilename)
         {
             string resultXml = string.Empty;
@@ -75,7 +73,39 @@ namespace CockatriceCardImageLoader.Cockatrice
             System.IO.File.WriteAllText(xmlFilename, resultXml);
         }
 
+        public int PrintCount
+        {
+            get
+            {
+                if (printCount == -1)
+                    printCount = computePrintCount();
+
+                return printCount;
+            }
+        }
+
+        public CollectionCard GetByName(string cardName)
+        {
+            foreach(CollectionCard card in this.Cards)
+                if (card.Name.Trim().ToLower() == cardName.Trim().ToLower())
+                    return card;
+
+            return null;
+        }
+
+
+        private int printCount = -1;
         private static string LOWER_CASE_XSL_TRANSFORMER = "<xsl:stylesheet version=\"1.0\"\r\n xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">\r\n <xsl:output omit-xml-declaration=\"yes\" indent=\"yes\"/>\r\n <xsl:strip-space elements=\"*\"/>\r\n\r\n <xsl:variable name=\"vUpper\" select=\r\n \"'ABCDEFGHIJKLMNOPQRSTUVWXYZ'\"/>\r\n\r\n <xsl:variable name=\"vLower\" select=\r\n \"'abcdefghijklmnopqrstuvwxyz'\"/>\r\n\r\n <xsl:template match=\"node()|@*\">\r\n     <xsl:copy>\r\n       <xsl:apply-templates select=\"node()|@*\"/>\r\n     </xsl:copy>\r\n </xsl:template>\r\n\r\n <xsl:template match=\"*[name()=local-name()]\" priority=\"2\">\r\n  <xsl:element name=\"{translate(name(), $vUpper, $vLower)}\"\r\n   namespace=\"{namespace-uri()}\">\r\n       <xsl:apply-templates select=\"node()|@*\"/>\r\n  </xsl:element>\r\n </xsl:template>\r\n\r\n <xsl:template match=\"*\" priority=\"1\">\r\n  <xsl:element name=\r\n   \"{substring-before(name(), ':')}:{translate(local-name(), $vUpper, $vLower)}\"\r\n   namespace=\"{namespace-uri()}\">\r\n       <xsl:apply-templates select=\"node()|@*\"/>\r\n  </xsl:element>\r\n </xsl:template>\r\n\r\n <xsl:template match=\"@*[name()=local-name()]\" priority=\"2\">\r\n  <xsl:attribute name=\"{translate(name(), $vUpper, $vLower)}\"\r\n   namespace=\"{namespace-uri()}\">\r\n       <xsl:value-of select=\".\"/>\r\n  </xsl:attribute>\r\n </xsl:template>\r\n\r\n <xsl:template match=\"@*\" priority=\"1\">\r\n  <xsl:attribute name=\r\n   \"{substring-before(name(), ':')}:{translate(local-name(), $vUpper, $vLower)}\"\r\n   namespace=\"{namespace-uri()}\">\r\n     <xsl:value-of select=\".\"/>\r\n  </xsl:attribute>\r\n </xsl:template>\r\n</xsl:stylesheet>";
+
+        private int computePrintCount()
+        {
+            int n = 0;
+
+            foreach (CollectionCard card in this.Cards)
+                n += card.Prints.Length;
+
+            return n;
+        }
 
         private static string lowerCaseAllNames(string xml)
         {
@@ -103,29 +133,6 @@ namespace CockatriceCardImageLoader.Cockatrice
 
 
             }
-        }
-
-        private int printCount = -1;
-
-        public int PrintCount
-        {
-            get
-            {
-                if (printCount == -1)
-                    printCount = computePrintCount();
-
-                return printCount;
-            }
-        }
-
-        private int computePrintCount()
-        {
-            int n = 0;
-
-            foreach (CollectionCard card in this.Cards)
-                n += card.Prints.Length;
-
-            return n;
         }
 
         private static Stream streamFromString(string s)

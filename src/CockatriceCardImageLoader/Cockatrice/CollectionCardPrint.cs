@@ -14,7 +14,7 @@ namespace CockatriceCardImageLoader.Cockatrice
     public class CollectionCardPrint
     {
         [XmlText]
-        public string SetCode { get; set; }
+        public string SetName { get; set; }
 
         [XmlAttribute("picurl")]
         public string PicURL { get; set; }

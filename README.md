@@ -31,6 +31,7 @@ Don't forget to customize the configuration file.
 | COCKATRICE_DEFAULT_CUSTOMSETS_FOLDERNAME 	| Defines the Cockatrice folder name where custom sets are found. 					|
 | COCKATRICE_DEFAULT_IMAGE_FOLDERNAME 		| Defines the Cockatrice folder name for MTG card images. 						|
 | COCKATRICE_COSTUM_IMAGE_FOLDERNAME 		| Defines the Cockatrice folder name for non-MTG card images. 						|
+| COCKATRICE_DEFAULT_DECKS_FOLDERNAME		| Defines the Cockatrice folder name for decks.								|
 
 ## Downloading card images.
 
@@ -60,3 +61,16 @@ Don't forget to customize the configuration file.
 When converting from PlaneSculptors to Cockatrice, special attention must be given to the mana costs of cards and abilities.
 Because the few tests this tool endured were done with the Magnitar Star Wars custom sets, its use of mana cost symbols determined the initial support of this tool.
 For an extensive view of the costs supported, please open the file 'PlanesculptorsToCockatriceConverter.cs' in the source folder "Convertors".
+
+## Adding deck to another collection
+
+You can add a deck from the selected collection to another collection.
+
+1. First select the collection to which the deck referes to.
+	1. This is the collection where the cards defined in the target deck are initially defined.
+2. Then add the target deck to another collection.
+	1. This another collection is a new custom collection where the cards will exist too.
+3. If your deck contains cards defined in different collections you must repeat this process for eachone of those collections.
+4. If you defined a different set code and name for the different language don't forget to download the images for the it's set folder.
+
+> In the present version the app only recognizes text decks.

@@ -43,17 +43,6 @@ namespace CockatriceCardImageLoader.Convertors
                     Pt = card.PtString
                 };
 
-                //newItem.Properties = new Dictionary<string, string>()
-                //{
-                //    {"Cmc", card.Cmc},
-                //    {"ManaCost",GetManaCost(card.ManaCost) },
-                //    {"Colors", StringArrayToString(card.Colors) },
-                //    {"Type", card.Types},
-                //    {"MainType", GetMainType(card.Types.ToLower())},
-                //    {"ColorIdentity", StringArrayToString(card.Colors)},
-                //    {"Pt", card.PtString }
-                //};
-
                 newItem.Prints = [new CollectionCardPrint()
                 {
                     Num = card.SequenceNumber.ToString(),
@@ -61,7 +50,7 @@ namespace CockatriceCardImageLoader.Convertors
                     PicURL = card.ArtUrl,
                     Rarity = card.RarityName,
                     Illustrator = card.Illustrator,
-                    SetCode = setCode
+                    SetName = setCode
                 }];
 
                 collectionFile.Cards[i] = newItem;
