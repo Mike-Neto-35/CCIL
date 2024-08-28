@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Formats.Tar;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -14,6 +13,9 @@ using System.Xml.Xsl;
 
 namespace CockatriceCardImageLoader.Cockatrice
 {
+    /// <summary>
+    /// Describes the properties of a card.
+    /// </summary>
     public class CollectionCardProperties
     {
         [XmlElement("format-brawl")]
@@ -32,7 +34,7 @@ namespace CockatriceCardImageLoader.Cockatrice
         public string ManaCost { get; set; }
 
         [XmlElement("cmc")]
-        public int Cmc { get; set; }
+        public string Cmc { get; set; }
 
         [XmlElement("format-pioneer")]
         public string FormatPioneer { get; set; }

@@ -7,6 +7,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Net;
 using System.Runtime.InteropServices;
 
@@ -32,13 +33,13 @@ namespace CockatriceCardImageLoader
 
 
 
-            log("");
-            log("CockatriceCardImageLoader");
-            log("");
+            Logger.Log("");
+            Logger.Log("CockatriceCardImageLoader");
+            Logger.Log("");
 
             if (DEFAULT_CARD_IMAGE_SERVER == null)
             {
-                log("Configuration file is missing!\nApplication terminated.");
+                Logger.Log("Configuration file is missing!\nApplication terminated.");
                 return;
             }
 
@@ -46,16 +47,17 @@ namespace CockatriceCardImageLoader
             bool done1 = false;
             while (!done1)
             {
-                log("Select collection to load:");
-                log("1 - Select Cockatrice cards file (cards.xml).");
-                log("2 - Select Cockatrice tokens file (tokens.xml).");
-                log("3 - Input card collection file manually.");
-                log("4 - Convert set from Planesculptors to Cockatrice XML.");
-                log("0 - Proceed to operations or to end application.");
+                Logger.Log("Select collection to load:");
+                Logger.Log("1 - Select Cockatrice cards file (cards.xml).");
+                Logger.Log("2 - Select Cockatrice tokens file (tokens.xml).");
+                Logger.Log("3 - Input card collection file manually.");
+                Logger.Log("4 - Convert set from Planesculptors to Cockatrice XML.");
+                Logger.Log("5 - Batch convert set from Planesculptors to Cockatrice XML.");
+                Logger.Log("0 - Proceed to operations or to end application.");
 
                 string cmd1 = Console.ReadLine();
-                logToFile(cmd1);
-                log("");
+                Logger.LogToFile(cmd1);
+                Logger.Log("");
 
                 try
                 {
@@ -65,75 +67,79 @@ namespace CockatriceCardImageLoader
                             if (collectionFile != null)
                                 done1 = true;
                             else
-                                log("You can't proceed to operations until you select a card collection!\n");
+                                Logger.Log("You can't proceed to operations until you select a card collection!\n");
                             break;
 
                         case "1":
                             collectionFilepath = Path.Combine(COCKATRICE_DATA_FOLDER, COCKATRICE_DEFAULT_CARD_FILENAME);
                             downloadedPicsPath = Path.Combine(COCKATRICE_DATA_FOLDER, COCKATRICE_DEFAULT_IMAGE_FOLDERNAME);
-                            log($"Collection file path: '{collectionFilepath}'");
-                            log($"Images output folder: '{downloadedPicsPath}'");
-                            log("Load cards file from xml file...");
+                            Logger.Log($"Collection file path: '{collectionFilepath}'");
+                            Logger.Log($"Images output folder: '{downloadedPicsPath}'");
+                            Logger.Log("Load cards file from xml file...");
                             collectionFile = CollectionFile.ImportFromXmlFile(collectionFilepath);
-                            log("");
+                            Logger.Log("");
                             printReportForCollectionFile(collectionFile);
                             break;
 
                         case "2":
                             collectionFilepath = Path.Combine(COCKATRICE_DATA_FOLDER, COCKATRICE_DEFAULT_TOKEN_FILENAME);
                             downloadedPicsPath = Path.Combine(COCKATRICE_DATA_FOLDER, COCKATRICE_DEFAULT_IMAGE_FOLDERNAME);
-                            log($"Collection file path: '{collectionFilepath}'");
-                            log($"Images output folder: '{downloadedPicsPath}'");
-                            log("Load tokens file from xml file...");
+                            Logger.Log($"Collection file path: '{collectionFilepath}'");
+                            Logger.Log($"Images output folder: '{downloadedPicsPath}'");
+                            Logger.Log("Load tokens file from xml file...");
                             collectionFile = CollectionFile.ImportFromXmlFile(collectionFilepath);
-                            log("");
+                            Logger.Log("");
                             printReportForCollectionFile(collectionFile);
                             break;
 
                         case "3":
-                            log("Input collection source file (relative to %cockatrice_data%): ", newLine: false);
+                            Logger.Log("Input collection source file (relative to %cockatrice_data%): ", newLine: false);
                             string cardSourceFile = Console.ReadLine();
                             collectionFilepath = Path.Combine(COCKATRICE_DATA_FOLDER, COCKATRICE_DEFAULT_CUSTOMSETS_FOLDERNAME, cardSourceFile);
                             downloadedPicsPath = Path.Combine(COCKATRICE_DATA_FOLDER, COCKATRICE_COSTUM_IMAGE_FOLDERNAME);
-                            log($"Collection file path: '{collectionFilepath}'");
-                            log($"Images output folder: '{downloadedPicsPath}'");
+                            Logger.Log($"Collection file path: '{collectionFilepath}'");
+                            Logger.Log($"Images output folder: '{downloadedPicsPath}'");
                             if (System.IO.File.Exists(collectionFilepath))
                             {
                                 collectionFile = CollectionFile.ImportFromXmlFile(collectionFilepath);
-                                log("");
+                                Logger.Log("");
                                 printReportForCollectionFile(collectionFile);
                             }
                             else
-                                log($"File '{collectionFile}' does not existe!");
+                                Logger.Log($"File '{collectionFile}' does not existe!");
                             break;
 
                         case "4":
                             convertPlanesculptorsJsonToCockatriceXml();
                             break;
+
+                        case "5":
+                            batchConvertPlanesculptorsJsonToCockatriceXml();
+                            break;
                     }
                 }
                 catch(Exception ex)
                 {
-                    log($"Exception! {ex.Message}", ex);
-                    log("");
+                    Logger.Log($"Exception! {ex.Message}", ex);
+                    Logger.Log("");
                 }
             }
 
             bool done2 = false;
             while (!done2)
             {
-                log("Select operation:");
-                log("11 - Download cards image (English).");
-                log("12 - Create set folders.");
-                log("13 - Count missing images.");
-                log("14 - Name missing images.");
-                log("15 - Count missing image defintions.");
-                log("16 - Name missing image definitions.");
-                log("0 - End application.");
+                Logger.Log("Select operation:");
+                Logger.Log("11 - Download cards image (English).");
+                Logger.Log("12 - Create set folders.");
+                Logger.Log("13 - Count missing images.");
+                Logger.Log("14 - Name missing images.");
+                Logger.Log("15 - Count missing image defintions.");
+                Logger.Log("16 - Name missing image definitions.");
+                Logger.Log("0 - End application.");
 
                 string cmd2 = Console.ReadLine();
-                logToFile(cmd2);
-                log("");
+                Logger.LogToFile(cmd2);
+                Logger.Log("");
 
                 try
                 {
@@ -170,68 +176,115 @@ namespace CockatriceCardImageLoader
                 }
                 catch (Exception ex)
                 {
-                    log($"Exception! {ex.Message}", ex);
-                    log("");
+                    Logger.Log($"Exception! {ex.Message}", ex);
+                    Logger.Log("");
                 }
             }
 
-            log("Application end.");
+            Logger.Log("Application end.");
             Console.ReadKey();
         }
 
 
+        private static void batchConvertPlanesculptorsJsonToCockatriceXml()
+        {
+            Logger.Log("Batch converting sets from Planesculptors to Cockatrice XML...");
+
+            Logger.Log("Input batch filename (relative to %cockatrice_data%): ", newLine: false);
+            string batchFilename = Console.ReadLine();
+            Logger.LogToFile(batchFilename);
+
+            Logger.Log("Types 'download' if you to want to download all images: ", newLine: false);
+            bool toDowload = Console.ReadLine().ToLower() == "download";
+            Logger.LogToFile(batchFilename);
+
+
+            batchFilename = Path.Combine(COCKATRICE_DATA_FOLDER, COCKATRICE_DEFAULT_CUSTOMSETS_FOLDERNAME, batchFilename);
+
+            string allText = System.IO.File.ReadAllText(batchFilename);
+            string[] allLines = allText.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            Logger.Log("");
+
+            foreach (string line in allLines)
+            {
+                string[] allParameteres = line.Split('\t');
+
+                convertPlanesculptorsJsonToCockatriceXml(allParameteres[0], allParameteres[1], allParameteres[2], allParameteres[3], allParameteres[4], allParameteres[5], allParameteres[6], allParameteres[7]);
+
+                if (toDowload)
+                {
+                    Logger.Log("Downloading card images...");
+                    Logger.Log("");
+
+                    string collectionFilepath = Path.Combine(COCKATRICE_DATA_FOLDER, COCKATRICE_DEFAULT_CUSTOMSETS_FOLDERNAME, allParameteres[7]);
+                    string downloadedPicsPath = Path.Combine(COCKATRICE_DATA_FOLDER, COCKATRICE_COSTUM_IMAGE_FOLDERNAME);
+                    CollectionFile collectionFile = CollectionFile.ImportFromXmlFile(collectionFilepath);
+                    downloadCardImages(collectionFile, downloadedPicsPath);
+
+                    Logger.Log("Card images downloaded.");
+                    Logger.Log("");
+                }
+            }
+
+            Logger.Log("Batch conversion done.");
+            Logger.Log("");
+        }
 
         private static void convertPlanesculptorsJsonToCockatriceXml()
         {
-            log("Converting set from Planesculptors to Cockatrice XML...");
+            Logger.Log("Converting set from Planesculptors to Cockatrice XML...");
 
-            log("Input set code: ", newLine: false);
+            Logger.Log("Input set code: ", newLine: false);
             string setCode = Console.ReadLine();
-            logToFile(setCode);
+            Logger.LogToFile(setCode);
 
-            log("Input set name: ", newLine: false);
+            Logger.Log("Input set name: ", newLine: false);
             string setName = Console.ReadLine();
-            logToFile(setName);
+            Logger.LogToFile(setName);
 
-            log("Input set type (\"Custom[: <game>[:<set>]]\"): ", newLine: false);
+            Logger.Log("Input set type (\"Custom[: <game>[:<set>]]\"): ", newLine: false);
             string setType = Console.ReadLine();
-            logToFile(setType);
+            Logger.LogToFile(setType);
 
-            log("Input set author: ", newLine: false);
+            Logger.Log("Input set author: ", newLine: false);
             string setAuthor = Console.ReadLine();
-            logToFile(setAuthor);
+            Logger.LogToFile(setAuthor);
 
-            log("Input set version: ", newLine: false);
+            Logger.Log("Input set version: ", newLine: false);
             string setVersion = Console.ReadLine();
-            logToFile(setVersion);
+            Logger.LogToFile(setVersion);
 
-            log("Input set date: ", newLine: false);
+            Logger.Log("Input set date: ", newLine: false);
             string setDate = Console.ReadLine();
-            logToFile(setDate);
+            Logger.LogToFile(setDate);
 
-            log("Input PlaneSculptors page url for the set: ", newLine: false);
+            Logger.Log("Input PlaneSculptors page url for the set: ", newLine: false);
             string planesculptorsPageUrl = Console.ReadLine();
-            logToFile(planesculptorsPageUrl);
+            Logger.LogToFile(planesculptorsPageUrl);
 
-            log("Input result file (relative to %cockatrice_data%): ", newLine: false);
+            Logger.Log("Input result file (relative to %cockatrice_data%): ", newLine: false);
             string resultFile = Console.ReadLine();
-            logToFile(resultFile);
+            Logger.LogToFile(resultFile);
 
+            convertPlanesculptorsJsonToCockatriceXml(setCode, setName, setType, DateTime.Parse(setDate).ToString("yyyy-MM-dd"), setAuthor, setVersion, planesculptorsPageUrl, resultFile);
+        }
 
-
-            log("Converting Planesculptors JSON into Cockatrice XML...");
+        private static void convertPlanesculptorsJsonToCockatriceXml(string setCode, string setName, string setType, string setAuthor, string setVersion, string setDate, string planesculptorsPageUrl, string resultFile)
+        {
+            Logger.Log($"Converting Planesculptors set '{setName}', '{setName}' into Cockatrice...");
 
             resultFile = Path.Combine(COCKATRICE_DATA_FOLDER, COCKATRICE_DEFAULT_CUSTOMSETS_FOLDERNAME, resultFile);
 
             string json = SiteInterface.GetSetJson(planesculptorsPageUrl);
-            SetCardList cardList = JsonConvert.DeserializeObject<SetCardList>(json);
+            CardList cardList = JsonConvert.DeserializeObject<CardList>(json);
 
             CollectionFile cockatriceCollection = PlanesculptorsToCockatriceConverter.Convert(cardList, setCode);
 
             cockatriceCollection.Sets[0].Name = setCode;
             cockatriceCollection.Sets[0].LongName = setName;
             cockatriceCollection.Sets[0].SetType = setType;
-            cockatriceCollection.Sets[0].ReleaseDate = DateTime.Parse(setDate).ToString("yyyy-MM-dd");
+            cockatriceCollection.Sets[0].ReleaseDate = setDate;
 
             cockatriceCollection.Info.Author = setAuthor;
             cockatriceCollection.Info.SourceVersion = setVersion;
@@ -240,43 +293,43 @@ namespace CockatriceCardImageLoader
 
             cockatriceCollection.ExportToXmlFile(resultFile);
 
-            log("Conversion done.");
-            log("");
+            Logger.Log("Conversion done.");
+            Logger.Log("");
         }
 
         private static void printReportForCollectionFile(CollectionFile collectionFile)
         {
-            log("Collection loaded from xml file.");
+            Logger.Log("Collection loaded from xml file.");
 
             if (collectionFile.Info != null)
             {
                 if (collectionFile.Info.Author != null)
-                    log($"Author: {collectionFile.Info.Author}.");
+                    Logger.Log($"Author: {collectionFile.Info.Author}.");
 
                 if (collectionFile.Info.SourceVersion != null)
-                    log($"Version: {collectionFile.Info.SourceVersion}.");
+                    Logger.Log($"Version: {collectionFile.Info.SourceVersion}.");
 
             }
             else
             {
-                log("Set provide no info!");
+                Logger.Log("Set provide no info!");
             }
 
             if (collectionFile.Sets != null)
-                log($"{collectionFile.Sets.Count().ToString()} set(s).");
+                Logger.Log($"{collectionFile.Sets.Count().ToString()} set(s).");
 
             if (collectionFile.Cards != null)
-                log($"{collectionFile.Cards.Count().ToString()} cards.");
+                Logger.Log($"{collectionFile.Cards.Count().ToString()} cards.");
 
-            log($"{collectionFile.PrintCount.ToString()} prints.");
+            Logger.Log($"{collectionFile.PrintCount.ToString()} prints.");
 
 
-            log("");
+            Logger.Log("");
         }
 
         private static void downloadCardImages(CollectionFile collectionFile, string rootFolder)
         {
-            log("Download card images from server...");
+            Logger.Log("Download card images from server...");
 
             createSetFolders(collectionFile, rootFolder);
 
@@ -296,7 +349,7 @@ namespace CockatriceCardImageLoader
                     {
                         if (cardPrint.HasPrintImage)
                         {
-                            log($"Download image for card '{card.Name}' in set '{cardPrint.SetCode}'.");
+                            Logger.Log($"Download image for card '{card.Name}' in set '{cardPrint.SetCode}'.");
 
                             int retries = 5;
                             bool downloaded = downloadCardPrintImage(card, cardPrint, cardPrintLocalFilename);
@@ -315,13 +368,13 @@ namespace CockatriceCardImageLoader
                         }
                         else
                         {
-                            log($"Card '{card.Name}' in set '{cardPrint.SetCode}' does not define an image!");
+                            Logger.Log($"Card '{card.Name}' in set '{cardPrint.SetCode}' does not define an image!");
                         }
 
                         if (downloadedPicsCount > 0 && downloadedPicsCount % 50 == 0)
                         {
-                            log("");
-                            log($"{downloadedPicsCount} images downloaded.");
+                            Logger.Log("");
+                            Logger.Log($"{downloadedPicsCount} images downloaded.");
 
                             DateTime end = DateTime.Now;
                             TimeSpan len = end - start;
@@ -330,8 +383,8 @@ namespace CockatriceCardImageLoader
                             TimeSpan remainingTimeSpan = new TimeSpan((long)remainingTimeTicks);
                             DateTime timeOfCompletion = DateTime.Now.Add(remainingTimeSpan);
 
-                            log($"Estimated time for completion: {(int)remainingTimeSpan.TotalMinutes} minutes at {timeOfCompletion.ToString()}");
-                            log("");
+                            Logger.Log($"Estimated time for completion: {(int)remainingTimeSpan.TotalMinutes} minutes at {timeOfCompletion.ToString()}");
+                            Logger.Log("");
                         }
 
                     }
@@ -339,8 +392,8 @@ namespace CockatriceCardImageLoader
 
             }
 
-            log("Download card images from server terminated.");
-            log("");
+            Logger.Log("Download card images from server terminated.");
+            Logger.Log("");
 
         }
 
@@ -358,20 +411,20 @@ namespace CockatriceCardImageLoader
                 }
                 catch (WebException wex)
                 {
-                    log($"Web Exception! Http Code: {wex.Status} - {wex.Message}", wex);
+                    Logger.Log($"Web Exception! Http Code: {wex.Status} - {wex.Message}", wex);
 
                     switch ((int)wex.Status)
                     {
                         case 429:
                             // Too Many Requests
-                            log("Sleeping for 60 seconds...");
+                            Logger.Log("Sleeping for 60 seconds...");
                             System.Threading.Thread.Sleep(60000);
                             break;
                     }
                 }
                 catch (Exception ex)
                 {
-                    log($"Exception! {ex.Message}", ex);
+                    Logger.Log($"Exception! {ex.Message}", ex);
                 }
             }
 
@@ -380,7 +433,7 @@ namespace CockatriceCardImageLoader
 
         private static int countMissingImages(CollectionFile collectionFile, string rootFolder)
         {
-            log("Counting missing images...");
+            Logger.Log("Counting missing images...");
 
             int count = 0;
 
@@ -396,15 +449,15 @@ namespace CockatriceCardImageLoader
                 }
             }
 
-            log($"There are {count} missing images.");
-            log("");
+            Logger.Log($"There are {count} missing images.");
+            Logger.Log("");
 
             return count;
         }
 
         private static int nameMissingImages(CollectionFile collectionFile, string rootFolder)
         {
-            log("Naming missing images...");
+            Logger.Log("Naming missing images...");
 
             int count = 0;
 
@@ -418,20 +471,20 @@ namespace CockatriceCardImageLoader
                     if (!System.IO.File.Exists(cardPrintLocalFilename))
                     {
                         count++;
-                        log($"Image is missing for card '{card.Name}' in set '{cardPrint.SetCode}'.");
+                        Logger.Log($"Image is missing for card '{card.Name}' in set '{cardPrint.SetCode}'.");
                     }
                 }
             }
 
-            log($"There are {count} missing images.");
-            log("");
+            Logger.Log($"There are {count} missing images.");
+            Logger.Log("");
 
             return count;
         }
 
         private static int countMissingImageDefintions(CollectionFile collectionFile, string rootFolder)
         {
-            log("Counting missing image definitions...");
+            Logger.Log("Counting missing image definitions...");
 
             int count = 0;
 
@@ -440,15 +493,15 @@ namespace CockatriceCardImageLoader
                     if (!cardPrint.HasPrintImage)
                         count++;
 
-            log($"There are {count} missing image definitions.");
-            log("");
+            Logger.Log($"There are {count} missing image definitions.");
+            Logger.Log("");
 
             return count;
         }
 
         private static int nameMissingImageDefintions(CollectionFile collectionFile, string rootFolder)
         {
-            log("Naming missing images definitions...");
+            Logger.Log("Naming missing images definitions...");
 
             int count = 0;
 
@@ -457,11 +510,11 @@ namespace CockatriceCardImageLoader
                     if (!cardPrint.HasPrintImage)
                     {
                         count++;
-                        log($"Image definition is missing for card '{card.Name}' in set '{cardPrint.SetCode}'.");
+                        Logger.Log($"Image definition is missing for card '{card.Name}' in set '{cardPrint.SetCode}'.");
                     }
 
-            log($"There are {count} missing images definitions");
-            log("");
+            Logger.Log($"There are {count} missing images definitions");
+            Logger.Log("");
 
             return count;
         }
@@ -470,18 +523,18 @@ namespace CockatriceCardImageLoader
         {
             if (!System.IO.Directory.Exists(rootFolder))
             {
-                log($"Create root folder '{rootFolder}'.");
+                Logger.Log($"Create root folder '{rootFolder}'.");
                 System.IO.Directory.CreateDirectory(rootFolder);
             }
         }
 
         private static void createSetFolders(CollectionFile collectionFile, string rootFolder)
         {
-            log("Creating set folders...");
+            Logger.Log("Creating set folders...");
 
             if (collectionFile.Sets == null)
             {
-                log("This collection does not contain sets.");
+                Logger.Log("This collection does not contain sets.");
                 return;
             }
 
@@ -492,8 +545,8 @@ namespace CockatriceCardImageLoader
                 checkSetFolderExistence(rootFolder, set.Name);
             }
 
-            log("Set folders created.");
-            log("");
+            Logger.Log("Set folders created.");
+            Logger.Log("");
 
         }
 
@@ -520,49 +573,9 @@ namespace CockatriceCardImageLoader
 
             if (!System.IO.Directory.Exists(folderName))
             {
-                log($"Create folder for set '{folderName}'.");
+                Logger.Log($"Create folder for set '{folderName}'.");
                 System.IO.Directory.CreateDirectory(folderName);
             }
-        }
-
-
-
-        private static int logLength = 0;
-        
-        private static void log(string entry, bool newLine = true)
-        {
-            logToFile(entry);
-
-            logLength += entry.Length;
-
-            if (logLength > 25000)
-            {
-                Console.Clear();
-                logLength = 0;
-            }
-
-            if (newLine)
-                Console.WriteLine(entry);
-            else
-                Console.Write(entry);
-        }
-
-        private static void log(string entry, Exception ex)
-        {
-            log(entry);
-
-            while (ex.InnerException != null)
-            {
-                ex = ex.InnerException;
-                log(ex.Message);
-            }
-        }
-
-        private static string logFilepath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), $"operation{DateTime.Now.ToString("yyyyMMdd")}.log");
-
-        private static void logToFile(string entry)
-        {
-            System.IO.File.AppendAllText(logFilepath, DateTime.Now.ToString() + "\t" + entry + "\r\n");   
         }
     }
 }

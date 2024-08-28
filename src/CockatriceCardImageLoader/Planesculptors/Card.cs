@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,29 +6,17 @@ using System.Threading.Tasks;
 
 namespace CockatriceCardImageLoader.Planesculptors
 {
-    public class SetCardList : List<Card>
-    {
-
-
-
-        public static SetCardList ImportFromFile(string filename)
-        {
-            string json = System.IO.File.ReadAllText(filename);
-
-            SetCardList setFile = JsonConvert.DeserializeObject<SetCardList>(json);
-
-            return setFile;
-        }
-    }
-
+    /// <summary>
+    /// Describes a card of a Planesculptors set.
+    /// </summary>
     public class Card
     {
-        public int CardId { get; set; }
-        public int SequenceNumber { get; set; }
+        public string CardId { get; set; }
+        public string SequenceNumber { get; set; }
         public string Shape { get; set; }
         public string Name { get; set; }
         public string ManaCost { get; set; }
-        public int Cmc { get; set; }
+        public string Cmc { get; set; }
         public string[] Colors { get; set; }
         public string Types { get; set; }
         public string ArtUrl { get; set; }

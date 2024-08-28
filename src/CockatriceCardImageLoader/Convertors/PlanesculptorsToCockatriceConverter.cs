@@ -8,9 +8,12 @@ using System.Threading.Tasks;
 
 namespace CockatriceCardImageLoader.Convertors
 {
+    /// <summary>
+    /// Converts Planesculptors card lists to Cockatrice collection files.
+    /// </summary>
     public class PlanesculptorsToCockatriceConverter
     {
-        public static CollectionFile Convert(SetCardList planesculptorsCardList, string setCode)
+        public static CollectionFile Convert(CardList planesculptorsCardList, string setCode)
         {
             CollectionFile collectionFile = new CollectionFile();
 
@@ -39,6 +42,17 @@ namespace CockatriceCardImageLoader.Convertors
                     ColorIdentity = StringArrayToString(card.Colors),
                     Pt = card.PtString
                 };
+
+                //newItem.Properties = new Dictionary<string, string>()
+                //{
+                //    {"Cmc", card.Cmc},
+                //    {"ManaCost",GetManaCost(card.ManaCost) },
+                //    {"Colors", StringArrayToString(card.Colors) },
+                //    {"Type", card.Types},
+                //    {"MainType", GetMainType(card.Types.ToLower())},
+                //    {"ColorIdentity", StringArrayToString(card.Colors)},
+                //    {"Pt", card.PtString }
+                //};
 
                 newItem.Prints = [new CollectionCardPrint()
                 {

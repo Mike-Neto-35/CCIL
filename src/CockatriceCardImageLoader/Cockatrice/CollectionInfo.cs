@@ -7,6 +7,9 @@ using System.Xml.Serialization;
 
 namespace CockatriceCardImageLoader.Cockatrice
 {
+    /// <summary>
+    /// Information about the author of a collection file.
+    /// </summary>
     public class CollectionInfo
     {
         [XmlElement("author")]

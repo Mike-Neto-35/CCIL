@@ -7,6 +7,9 @@ using System.Xml.Serialization;
 
 namespace CockatriceCardImageLoader.Cockatrice
 {
+    /// <summary>
+    /// Describes a card from a collection.
+    /// </summary>
     public class CollectionCard
     {
         [XmlElement("name")]
@@ -17,6 +20,7 @@ namespace CockatriceCardImageLoader.Cockatrice
 
         [XmlElement("prop")]
         public CollectionCardProperties Properties { get; set; }
+        //public Dictionary<string, string> Properties { get; set; }
 
         [XmlElement("set")]
         public CollectionCardPrint[] Prints { get; set; }

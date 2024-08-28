@@ -7,9 +7,13 @@ using System.Xml.Serialization;
 using System.Xml.XPath;
 using System.Xml.Xsl;
 using System.Xml;
+using System.IO;
 
 namespace CockatriceCardImageLoader.Cockatrice
 {
+    /// <summary>
+    /// Collection of cards and sets.
+    /// </summary>
     public class CollectionFile
     {
         [XmlAttribute("version")]
